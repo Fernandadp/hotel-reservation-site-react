@@ -9,19 +9,19 @@ import { Link } from 'react-router-dom'
 export default function Home() {
   return (
     <React.Fragment>
-    <Hero>
-      <Banner 
-        title="luxurious rooms"
-        subtitle="deluxe rooms starting at $299"
-      >
-        <Link to="/rooms" className="btn-primary" >
-          our rooms
-        </Link>
-      </Banner>
+      <Hero>
+        <Banner 
+          title="luxurious rooms"
+          subtitle="deluxe rooms starting at $299"
+        >
+          <Link to="/rooms" className="btn-primary" >
+            our rooms
+          </Link>
+        </Banner>
 
-    </Hero>
-    <Services />
-    <FeaturedRooms />
+      </Hero>
+      <Services />
+      <FeaturedRooms />
    </React.Fragment>
   )
 }
