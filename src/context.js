@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import items from './data'
+import Client from './Contentful'
 
 const RoomContext = React.createContext();
 //<RoomContext.Provider value={'hello}
@@ -21,24 +22,55 @@ class RoomProvider extends Component {
     pets: false
   };
 
-  //getData
+  // getData from Contentful
+  getData = async() => {
+    try {
+      let response = await Client.getEntries({
+        content_type: "hotelReservationSite",
+        // order: "sys.createdAt" would list the items according to when were they created, below they are being listed according to their price min to max
+        // order: "fields.price"
+        // the example below is reverse order, it will list the items from max to min price
+        order: "-fields.price"
+      });
+      let rooms = this.formatData(response.items);
+      let featuredRooms = rooms.filter(room => room.featured === true);
+      let maxPrice = Math.max(...rooms.map(item => item.price));
+      let maxSize = Math.max(...rooms.map(item => item.size));
+  
+      this.setState({
+        rooms, 
+        featuredRooms, 
+        sortedRooms: rooms, 
+        loading: false,
+        price: maxPrice,
+        maxPrice,
+        maxSize
+      });
+      console.log(response.items)
+    } catch(error) {
+      console.log(error)
+    }
+  }
 
   componentDidMount() {
-    let rooms = this.formatData(items);
-    let featuredRooms = rooms.filter(room => room.featured === true);
+    this.getData()
 
-    let maxPrice = Math.max(...rooms.map(item => item.price));
-    let maxSize = Math.max(...rooms.map(item => item.size));
+    // when we were using the local data, comment this.getData and uncomment code below:
+    // let rooms = this.formatData(items);
+    // let featuredRooms = rooms.filter(room => room.featured === true);
 
-    this.setState({
-      rooms, 
-      featuredRooms, 
-      sortedRooms: rooms, 
-      loading: false,
-      price: maxPrice,
-      maxPrice,
-      maxSize
-    });
+    // let maxPrice = Math.max(...rooms.map(item => item.price));
+    // let maxSize = Math.max(...rooms.map(item => item.size));
+
+    // this.setState({
+    //   rooms, 
+    //   featuredRooms, 
+    //   sortedRooms: rooms, 
+    //   loading: false,
+    //   price: maxPrice,
+    //   maxPrice,
+    //   maxSize
+    // });
   }
 
   formatData(items) {
